@@ -46,3 +46,13 @@ src/content/.obsidian/workspace-mobile.json
 # Generated deployment platform files (GitHub Pages + Cloudflare Workers only)
 public/_redirects
 public/_headers
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
