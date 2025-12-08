@@ -1,9 +1,9 @@
 {
-  "runWizardOnStartup": true,
+  "runWizardOnStartup": false,
   "currentTemplate": "standard",
-  "currentTheme": "oxygen",
+  "currentTheme": "catppuccin",
   "customThemeFile": "custom",
-  "contentOrganization": "file-based",
+  "contentOrganization": "folder-based",
   "themeColors": {
     "mode": "simple",
     "simpleColors": {
@@ -12,16 +12,16 @@
     }
   },
   "siteInfo": {
-    "site": "https://astro-modular.netlify.app",
-    "title": "Astro Modular",
-    "description": "A flexible blog theme designed for Obsidian users.",
-    "author": "David V. Kimball",
+    "site": "https://chrisfung.dev",
+    "title": "aergonomicon",
+    "description": "Dare mighty things",
+    "author": "Chris Fung",
     "language": "en",
     "faviconThemeAdaptive": true,
     "defaultOgImageAlt": "Astro Modular logo."
   },
   "layout": {
-    "contentWidth": "45rem"
+    "contentWidth": "50rem"
   },
   "tableOfContents": {
     "enabled": true,
@@ -49,28 +49,34 @@
         "url": "/projects/"
       },
       {
-        "title": "Docs",
-        "url": "/docs/"
-      },
-      {
         "title": "About",
         "url": "/about/"
       },
       {
         "title": "GitHub",
-        "url": "https://github.com/davidvkimball/astro-modular"
+        "url": "https://github.com/aergonaut/vault-cms"
       }
     ],
     "social": [
       {
-        "title": "X",
-        "url": "https://x.com/davidvkimball",
-        "icon": "x-twitter"
+        "title": "Bluesky",
+        "url": "https://bsky.app/profile/aergonaut.com",
+        "icon": "bluesky"
+      },
+      {
+        "title": "Mastodon",
+        "url": "https://ruby.social/@aergonaut",
+        "icon": "mastodon"
       },
       {
         "title": "GitHub",
-        "url": "https://github.com/davidvkimball",
+        "url": "https://github.com/aergonaut",
         "icon": "github"
+      },
+      {
+        "title": "LinkedIn",
+        "url": "https://www.linkedin.com/in/chrisfung",
+        "icon": "square-linkedin"
       }
     ]
   },
@@ -99,8 +105,8 @@
   "homeOptions": {
     "featuredPost": {
       "enabled": true,
-      "type": "latest",
-      "slug": "getting-started"
+      "type": "featured",
+      "slug": "speaking-at-railsconf-2025"
     },
     "recentPosts": {
       "enabled": true,
@@ -239,7 +245,7 @@
   },
   "optionalContentTypes": {
     "projects": true,
-    "docs": true
+    "docs": false
   },
   "availableThemes": "default",
   "customThemes": "",

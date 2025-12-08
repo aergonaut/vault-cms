@@ -8,38 +8,23 @@ aliases:
   - about-me
   - about-us
 ---
-Welcome to **Astro Modular**, an Astro blog theme template designed for Obsidian users, created by [David V. Kimball](https://davidvkimball.com). This theme turns Obsidian into a powerful CMS for instant blog publishing.
+## The person
 
-## Philosophy
+Hi there. My name is Chris Fung. "Fung" rhymes with "rung"; "Chris" is pronounced the usual way.
 
-Great content deserves great presentation without complexity. This blog theme is built on four core principles:
+I'm also generally known around the internet as `aergonaut`. The `e` is or is not silent, reader's choice. Ages ago, when I was looking for a username, I wanted something that was
 
-### Clarity First
-Content should be the star, not the design. Every element is carefully crafted to enhance readability and focus attention on what matters most - your ideas and writing.
+1. Visually appealing, since I would be seeing it a lot
+2. Rare enough that I could reasonably expect it to always be available
 
-### Highly Performant
-Fast loading times and smooth interactions are not optional. Every aspect of this theme has been optimized to deliver exceptional performance across all devices.
+"Airgonaut" was on a list of rare words in English, and I really liked it. I don't remember the definition exactly; it was something like "balloonist". It had a retro-future vibe that I found appealing. I swapped the spelling to make it a little more mysterious, _et voilà_.
 
-### Works with Obsidian
-If you use Obsidian, this theme is a natural extension of your workflow. All rich markdown and extended markdown features, including Wikilinks, callouts, and other embedded features, display seamlessly between your vault and published site.
+I have been making websites and writing code almost since I first got to use a computer. My first website was a fan site for Pokémon Yellow that I made in 5th grade in my school's computer lab. The first programming language I used was BASIC, which I learned at summer camp; I thought it was a weird choice that I had to number the lines myself.
 
-### Modular Design
-Every feature can be toggled on or off through a single configuration file. Enable only what you need, keeping your site fast and focused on your specific use case.
+I have been working with software and the Web for over a decade. I want to find ways that I can use my skills and my code to build things that help others make more good in the world. I think being able to draw a (mostly) straight line between the code I write and tangible impact on users' work, or lives, is the most rewarding part about programming for me.
 
----
+## The website
 
-## Pages to Check Out
+**aergonomicon** is my personal blog about code and technology.
 
-- [Contact](pages/contact.md) page with a form
-- [Thank You](pages/thank-you.md) page where submitters are directed after a successful submission 
-- [Privacy Policy](pages/privacy-policy.md) page
-
----
-
-## Posts to Check Out
-- [[getting-started|Getting Started]]
-- [Astro Suite Vault (Modular) Guide](posts/astro-suite-vault-modular-guide.md) 
-
----
-![Water droplet](attachments/water.png)
-*Photo by [Herbert Goetsch](https://unsplash.com/@hg_photo?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral) on [Unsplash](https://unsplash.com/?utm_source=Obsidian%20Image%20Inserter%20Plugin&utm_medium=referral)*
+It's gone through multiple iterations over the years, but the version you're reading now is built with Astro and deployed on Netlify. The content itself is authored in Obsidian.
