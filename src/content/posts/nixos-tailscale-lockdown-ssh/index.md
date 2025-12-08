@@ -8,7 +8,7 @@ tags:
   - ssh
 image: "[[cover.jpg]]"
 imageAlt: ""
-imageOG: false
+imageOG: true
 hideCoverImage: false
 hideTOC: false
 targetKeyword: ""

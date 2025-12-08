@@ -8,7 +8,7 @@ tags:
   - speaking
 image: welcome-to-philadelphia.png
 imageAlt: ""
-imageOG: false
+imageOG: true
 hideCoverImage: false
 hideTOC: false
 targetKeyword: ""
