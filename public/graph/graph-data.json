@@ -1,6 +1,13 @@
 {
   "nodes": [
     {
+      "id": "how-to-build-a-strong-code-review-culture",
+      "type": "post",
+      "title": "How to Build a Strong Code Review Culture",
+      "slug": "how-to-build-a-strong-code-review-culture",
+      "connections": 0
+    },
+    {
       "id": "nixos-tailscale-lockdown-ssh",
       "type": "post",
       "title": "Lock down SSH on NixOS with Tailscale",
@@ -31,9 +38,9 @@
   ],
   "connections": [],
   "metadata": {
-    "totalPosts": 4,
+    "totalPosts": 5,
     "totalConnections": 0,
     "maxNodesApplied": false,
-    "originalNodeCount": 4
+    "originalNodeCount": 5
   }
 }
