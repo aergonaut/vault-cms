@@ -101,7 +101,7 @@ As reviewers delivering feedback primarily in writing, we must remember this bia
 
 **Avoid dismissive words like "just" or "simple."** These words trivialize the author's efforts and diminish their skill. Usually, they don't add any content to the feedback. Delete them.
 
-**Clearly mark minor feedback with a tag such as "Nitpick".** If you want to leave feedback but don't think it's a must-fix, make that clear. This clarifies your intentions so the author isn't left guessing what feedback requires attention versus what to keep in mind for the future.
+**Clearly mark minor feedback with a tag such as "Nitpick".** If you want to leave feedback but don't think it's a must-fix, make that clear. This clarifies your intentions so the author isn't left guessing what feedback requires attention versus what to keep in mind for the future. Consider also using a system such as [Emoji Comments](docs/emoji-comments/index.md) to tag your comments for more playful and less ambiguous review comments!
 
 **Celebrate good things.** It's easy to fall into a habit of only pointing out what's wrong. When you see a well-done refactor, good application of object-oriented design, or excellent naming, call it out. This creates positive reinforcement, encouraging more developers to adopt practices that receive praise.
 

@@ -311,8 +311,9 @@ export const siteConfig: SiteConfig = {
     // [CONFIG:NAVIGATION_PAGES]
     pages: [
       { title: "Posts", url: "/posts/" },
+      { title: "Docs", url: "/docs/" },
       { title: "About", url: "/about/" },
-      { title: "GitHub", url: "https://github.com/aergonaut/vault-cms" },
+      { title: "GitHub", url: "https://github.com/aergonaut/vault-cms" }
     ],
     // [CONFIG:NAVIGATION_SOCIAL]
     social: [
@@ -344,7 +345,7 @@ export const siteConfig: SiteConfig = {
     // [CONFIG:OPTIONAL_CONTENT_TYPES_PROJECTS]
     projects: false, // Enable projects section
     // [CONFIG:OPTIONAL_CONTENT_TYPES_DOCS]
-    docs: false, // Enable documentation section
+    docs: true, // Enable documentation section
   },
 
   // Home Options
