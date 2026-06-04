@@ -1,28 +1,14 @@
 ---
-title: Building a Strong Code Review Culture
-description: How thoughtful code review practices help teams ship better software and grow engineers.
+title: " Internationalization on Rails: Unpacking the Rails I18n Toolkit"
+description: In this talk, I demystify internationalization and show you how Rails makes it easy to bake internationalization into your app from the start.
 event: RailsConf 2025
-date: 2025-07-09
-recordingUrl: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-slidesUrl: https://speakerdeck.com/aergonaut/building-a-strong-code-review-culture
+date: 2025-07-10
+recordingUrl: https://www.youtube.com/watch?v=Icd3pIvtoeA
+slidesUrl: https://speakerdeck.com/aergonaut/unpacking-the-rails-i18n-toolkit
 tags:
   - railsconf
-  - code-review
-  - culture
-draft: true
+  - i18n
+  - conferences
+draft: false
 ---
-At the final RailsConf in Philadelphia, I gave my first major conference talk on
-building a strong code review culture within engineering teams.
-
-## Abstract
-
-Code review is one of the highest-leverage practices a team can invest in, but
-it's easy to get wrong. In this talk I share concrete techniques for keeping
-reviews fast, kind, and effective — from lightweight conventions like
-EmojiComments to structural habits that help reviews scale with your team.
-
-## What you'll learn
-
-- Why code review is about communication, not gatekeeping
-- How to give feedback that lands without slowing the team down
-- Practical conventions you can adopt on Monday morning
+Building an app that's "just in English" might feel sufficient, but what if your next user prefers Spanish, German, or Chinese? Localization and internationalization are often an afterthought for many developers, if they are thought of at all. But it’s not only big, global companies that can benefit from them. They’re essential for startups and solo developers, too. In this talk, I’ll demystify internationalization and show you how Rails makes it easy to bake internationalization into your app from the start. You’ll learn how to use tools built into Rails and from gems in the wider ecosystem to easily support multilingual users, and make your app available to more people, wherever they are!

@@ -3,3 +3,5 @@ body.disable-tabs-hide-mobile-icon .mobile-navbar-action-tabs {
   display: none;
 }
 
+
+/* Scoped to only this plugin's settings container to avoid affecting other plugins */
