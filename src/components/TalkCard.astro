@@ -1,0 +1,99 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, formatDateMobile, isValidDate } from '../utils/markdown';
+import Icon from './Icon.astro';
+
+interface Props {
+  talk: CollectionEntry<'talks'>;
+  context?: 'talks' | 'home';
+}
+
+const { talk } = Astro.props;
+
+const { title, description, event, date, recordingUrl, slidesUrl, tags } = talk.data;
+---
+
+<div class="group bg-white dark:bg-primary-800 rounded-xl border border-primary-200 dark:border-primary-700 overflow-hidden hover:shadow-lg hover:border-highlight-300 dark:hover:border-highlight-600 transition-all duration-200">
+  <div class="p-5 sm:p-6">
+    <!-- Meta: date + event -->
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-primary-600 dark:text-primary-300 mb-2">
+      {isValidDate(date) && (
+        <time datetime={date.toISOString()} class="font-mono">
+          <span class="hidden sm:inline">{formatDate(date)}</span>
+          <span class="sm:hidden">{formatDateMobile(date)}</span>
+        </time>
+      )}
+      {event && (
+        <>
+          {isValidDate(date) && <span class="text-primary-300 dark:text-primary-600">•</span>}
+          <span class="inline-flex items-center gap-1.5 font-medium text-primary-700 dark:text-primary-200">
+            <Icon name="mic" class="w-4 h-4 text-highlight-600 dark:text-highlight-400" />
+            {event}
+          </span>
+        </>
+      )}
+    </div>
+
+    <!-- Title -->
+    <h3 class="text-lg font-bold text-primary-900 dark:text-primary-50 mb-2 leading-snug">
+      <a
+        href={`/talks/${talk.id}`}
+        class="hover:text-highlight-600 dark:hover:text-highlight-400 transition-colors"
+        aria-label={`View talk: ${title}`}
+      >
+        {title}
+      </a>
+    </h3>
+
+    <!-- Description -->
+    {description && (
+      <p class="text-sm text-primary-600 dark:text-primary-300 mb-4 line-clamp-2">
+        {description}
+      </p>
+    )}
+
+    <!-- Tags -->
+    {tags && tags.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 mb-4">
+        {tags.slice(0, 4).map((tag: string) => (
+          <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded bg-primary-100 dark:bg-primary-700 text-primary-700 dark:text-primary-200">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <!-- Links -->
+    <div class="flex flex-wrap items-center gap-2">
+      {recordingUrl && (
+        <a
+          href={recordingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-200 bg-primary-100 dark:bg-primary-700 rounded-lg hover:bg-highlight-100 dark:hover:bg-highlight-800 hover:text-highlight-700 dark:hover:text-highlight-300 transition-colors"
+        >
+          <Icon name="play" class="w-4 h-4" />
+          Recording
+        </a>
+      )}
+      {slidesUrl && (
+        <a
+          href={slidesUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-200 bg-primary-100 dark:bg-primary-700 rounded-lg hover:bg-highlight-100 dark:hover:bg-highlight-800 hover:text-highlight-700 dark:hover:text-highlight-300 transition-colors"
+        >
+          <Icon name="presentation" class="w-4 h-4" />
+          Slides
+        </a>
+      )}
+      <a
+        href={`/talks/${talk.id}`}
+        class="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-highlight-600 dark:text-highlight-400 hover:text-highlight-700 dark:hover:text-highlight-300 transition-colors ml-auto"
+      >
+        Details
+        <Icon name="arrow-right" class="w-4 h-4" />
+      </a>
+    </div>
+  </div>
+</div>

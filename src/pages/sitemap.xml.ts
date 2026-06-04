@@ -28,6 +28,7 @@ export const GET: APIRoute = async () => {
   const pages = await getCollection("pages");
   const projects = await getCollection("projects");
   const docs = await getCollection("docs");
+  const talks = await getCollection("talks");
 
   // Filter posts based on environment (in dev, show all including drafts)
   const isDev = import.meta.env.DEV;
@@ -52,6 +53,12 @@ export const GET: APIRoute = async () => {
 
   const visibleDocs = siteConfig.optionalContentTypes.docs
     ? docs.filter((doc) => shouldShowContent(doc, isDev) && !doc.data.noIndex)
+    : [];
+
+  const visibleTalks = siteConfig.optionalContentTypes.talks
+    ? talks.filter(
+        (talk) => shouldShowContent(talk, isDev) && !talk.data.noIndex
+      )
     : [];
 
   // Generate URLs
@@ -94,6 +101,18 @@ export const GET: APIRoute = async () => {
     urls.push(`
       <url>
         <loc>${siteUrl}docs/</loc>
+        <lastmod>${new Date().toISOString()}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+      </url>
+    `);
+  }
+
+  // Talks index page (only if talks are enabled)
+  if (siteConfig.optionalContentTypes.talks) {
+    urls.push(`
+      <url>
+        <loc>${siteUrl}talks/</loc>
         <lastmod>${new Date().toISOString()}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
@@ -147,6 +166,20 @@ export const GET: APIRoute = async () => {
     urls.push(`
       <url>
         <loc>${siteUrl}docs/${slug}/</loc>
+        <lastmod>${lastmod.toISOString()}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+      </url>
+    `);
+  });
+
+  // Individual talks
+  visibleTalks.forEach((talk) => {
+    const lastmod = talk.data.date;
+    const slug = getSlugFromId(talk.id);
+    urls.push(`
+      <url>
+        <loc>${siteUrl}talks/${slug}/</loc>
         <lastmod>${lastmod.toISOString()}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>

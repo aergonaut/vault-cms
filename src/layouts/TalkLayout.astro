@@ -1,0 +1,280 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { siteConfig } from '@/config';
+import { generateTalkSEO } from '@/utils/seo';
+import { getCollection } from 'astro:content';
+import { shouldShowPost, shouldShowContent, processPost, generateTOC, getAdjacentPosts, formatDate, formatDateMobile, isValidDate } from '@/utils/markdown';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
+import LinkedMentions from '@/components/LinkedMentions.astro';
+import GiscusComments from '@/components/GiscusComments.astro';
+import Icon from '@/components/Icon.astro';
+import { getOptimizedFormat } from '@/utils/images';
+import ImageWrapper from '@/components/ImageWrapper.astro';
+
+export interface Props {
+  talk: CollectionEntry<'talks'>;
+}
+
+const { talk } = Astro.props;
+
+// Check if we're in development mode
+const isDev = import.meta.env.DEV;
+
+// Generate SEO data
+const seoData = generateTalkSEO(talk, import.meta.env.SITE || '');
+
+// Generate structured data for the talk
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": talk.data.title,
+  "description": talk.data.description,
+  "startDate": talk.data.date.toISOString(),
+  "performer": {
+    "@type": "Person",
+    "name": siteConfig.author
+  },
+  "superEvent": talk.data.event ? {
+    "@type": "Event",
+    "name": talk.data.event
+  } : undefined,
+  "url": Astro.url.href,
+  "workPerformed": {
+    "@type": "CreativeWork",
+    "name": talk.data.title,
+    ...(talk.data.recordingUrl ? { "url": talk.data.recordingUrl } : {})
+  }
+};
+
+// Get all posts for wikilink resolution
+const allPosts = await getCollection('posts');
+const visiblePosts = allPosts.filter(p => shouldShowPost(p as any, isDev));
+
+// Get all talks for adjacent navigation
+const allTalks = await getCollection('talks');
+const visibleTalks = allTalks.filter(t => shouldShowContent(t, isDev));
+
+// Process the talk content and get processed data including headings
+const { Content, headings } = await processPost(talk as any);
+
+// Generate table of contents if enabled
+const hideTOC = talk.data.hideTOC === true;
+const shouldShowTOC = siteConfig.tableOfContents.enabled && !hideTOC && headings.length > 0;
+const toc = shouldShowTOC ? await generateTOC(headings) : [];
+
+// Get adjacent talks for navigation
+const { prev: prevTalk, next: nextTalk } = getAdjacentPosts(visibleTalks as any, talk.id);
+
+// Resolve cover image (supports external URLs and local attachments)
+const coverImage = (() => {
+  if (!talk.data.image || talk.data.hideCoverImage === true) return null;
+
+  let rawImage = talk.data.image;
+  if (Array.isArray(rawImage)) rawImage = rawImage[0];
+
+  let cleanImagePath = typeof rawImage === 'string' ? rawImage : '';
+  if (cleanImagePath.startsWith('[[') && cleanImagePath.endsWith(']]')) {
+    cleanImagePath = cleanImagePath.slice(2, -2);
+  }
+  if (!cleanImagePath) return null;
+
+  // External URL - pass through as-is
+  if (cleanImagePath.startsWith('http')) {
+    return { src: cleanImagePath, basePath: '' };
+  }
+
+  // Local image - strip Obsidian subfolder prefixes, then resolve under the talk folder
+  let imageSrc = cleanImagePath.replace(/^(images|attachments)\//, '');
+  imageSrc = getOptimizedFormat(imageSrc);
+  const basePath = talk.id ? `/talks/${talk.id}/` : '/talks/attachments/';
+  return { src: imageSrc, basePath };
+})();
+---
+
+<BaseLayout seoData={seoData}>
+  <Fragment slot="head">
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </Fragment>
+
+  <div class="py-8 relative">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 relative" style={`max-width: ${siteConfig.layout.contentWidth}`}>
+      <!-- Main content -->
+      <article class={`bg-primary-50 dark:bg-primary-900 rounded-lg border border-primary-200 dark:border-primary-700 shadow-sm ${coverImage ? 'overflow-hidden' : ''}`}>
+        {/* Cover image */}
+        {coverImage && (
+          <div class="h-40 sm:h-48 md:h-56 lg:h-64 overflow-hidden rounded-t-lg bg-primary-100 dark:bg-primary-800">
+            <ImageWrapper
+              src={coverImage.src}
+              basePath={coverImage.basePath}
+              alt={talk.data.imageAlt || `Title slide for talk: ${talk.data.title}`}
+              class="w-full h-full"
+              width={800}
+              height={450}
+              format="webp"
+              quality={85}
+              loading="eager"
+              fetchpriority="high"
+            />
+          </div>
+        )}
+
+        <!-- Talk content wrapper -->
+        <div class={`p-6 ${coverImage ? 'rounded-b-lg' : 'rounded-lg'}`}>
+          <!-- Talk header -->
+          <header class="mb-4">
+            <h1 class="text-xl font-bold text-primary-900 dark:text-primary-50 mb-4 leading-tight">
+              {talk.data.title}
+            </h1>
+
+            <!-- Event + date metadata -->
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-primary-600 dark:text-primary-300 mb-6">
+              {talk.data.event && (
+                <span class="inline-flex items-center gap-1.5 font-medium text-primary-700 dark:text-primary-200">
+                  <Icon name="mic" class="w-4 h-4 text-highlight-600 dark:text-highlight-400" />
+                  {talk.data.event}
+                </span>
+              )}
+
+              {talk.data.event && isValidDate(talk.data.date) && (
+                <span class="text-primary-300 dark:text-primary-600">•</span>
+              )}
+
+              {isValidDate(talk.data.date) && (
+                <time datetime={talk.data.date.toISOString()} class="inline-flex items-center gap-1.5 font-medium">
+                  <Icon name="calendar" class="w-4 h-4" />
+                  <span class="hidden sm:inline">{formatDate(talk.data.date)}</span>
+                  <span class="sm:hidden">{formatDateMobile(talk.data.date)}</span>
+                </time>
+              )}
+            </div>
+
+            <!-- Action buttons: Recording + Slides -->
+            {(talk.data.recordingUrl || talk.data.slidesUrl) && (
+              <div class="flex flex-wrap gap-3 mb-8">
+                {talk.data.recordingUrl && (
+                  <a
+                    href={talk.data.recordingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-highlight-600 dark:bg-highlight-400 text-white rounded-lg hover:opacity-90 transition-all duration-200"
+                    style="color: white !important;"
+                  >
+                    <Icon name="play" class="w-4 h-4" />
+                    Watch recording
+                  </a>
+                )}
+                {talk.data.slidesUrl && (
+                  <a
+                    href={talk.data.slidesUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-700 dark:text-primary-200 bg-primary-100 dark:bg-primary-800 border border-primary-200 dark:border-primary-700 rounded-lg hover:bg-highlight-100 dark:hover:bg-highlight-800 hover:text-highlight-700 dark:hover:text-highlight-300 transition-all duration-200"
+                  >
+                    <Icon name="presentation" class="w-4 h-4" />
+                    View slides
+                  </a>
+                )}
+              </div>
+            )}
+
+            <!-- Tags -->
+            {talk.data.tags && talk.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2 mb-8">
+                {talk.data.tags.map((tag: string) => (
+                  <span class="text-xs text-primary-600 dark:text-primary-300 bg-primary-100 dark:bg-primary-800 px-2.5 py-1 rounded-full border border-primary-200 dark:border-primary-700">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </header>
+
+          <!-- Article content (abstract / notes) -->
+          <div class="prose dark:prose-dark max-w-none" id="talk-content">
+            <Content />
+          </div>
+
+          {siteConfig.postOptions.linkedMentions.enabled && (
+            <LinkedMentions currentSlug={talk.id} />
+          )}
+
+          <!-- Talk navigation -->
+          {siteConfig.postOptions.postNavigation && (prevTalk || nextTalk) && (
+            <nav class="mt-8 pt-8 border-t border-primary-200 dark:border-primary-700">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {prevTalk && (
+                  <div class="text-left">
+                    <a
+                      href={`/talks/${prevTalk.id}`}
+                      class="group block p-4 rounded-lg border border-primary-200 dark:border-primary-700 hover:border-highlight-300 dark:hover:border-highlight-600 transition-all duration-200 hover:shadow-md"
+                    >
+                      <h3 class="font-semibold text-primary-900 dark:text-primary-50 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors">
+                        {prevTalk.data.title}
+                      </h3>
+                      <div class="flex justify-start mt-2">
+                        <Icon name="arrow-left" class="w-5 h-5 text-primary-500 dark:text-primary-400 group-hover:text-highlight-500 dark:group-hover:text-highlight-400 transition-colors" />
+                      </div>
+                    </a>
+                  </div>
+                )}
+
+                {nextTalk && (
+                  <div class={`text-right ${!prevTalk ? 'md:col-start-2' : ''}`}>
+                    <a
+                      href={`/talks/${nextTalk.id}`}
+                      class="group block p-4 rounded-lg border border-primary-200 dark:border-primary-700 hover:border-highlight-300 dark:hover:border-highlight-600 transition-all duration-200 hover:shadow-md"
+                    >
+                      <h3 class="font-semibold text-primary-900 dark:text-primary-50 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors">
+                        {nextTalk.data.title}
+                      </h3>
+                      <div class="flex justify-end mt-2">
+                        <Icon name="arrow-right" class="w-5 h-5 text-primary-500 dark:text-primary-400 group-hover:text-highlight-500 dark:group-hover:text-highlight-400 transition-colors" />
+                      </div>
+                    </a>
+                  </div>
+                )}
+              </div>
+            </nav>
+          )}
+
+          <!-- Giscus Comments -->
+          {siteConfig.postOptions.comments.enabled && (
+            <div class="mt-16">
+              <GiscusComments
+                postTitle={talk.data.title}
+                postSlug={talk.id}
+                postUrl={Astro.url.href}
+              />
+            </div>
+          )}
+        </div>
+      </article>
+
+      <!-- Desktop TOC - floats to the right of the content container -->
+      {shouldShowTOC && (
+        <div class="hidden xl:block absolute top-8 left-full ml-1 w-[280px]">
+          <div class="sticky top-24" id="toc">
+            <TableOfContents headings={toc} />
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <Fragment slot="scripts">
+    <script>
+      // Remove duplicate H1 from talk content (since we render it in the header)
+      document.addEventListener('DOMContentLoaded', function() {
+        const talkContent = document.getElementById('talk-content');
+        if (talkContent) {
+          const firstH1 = talkContent.querySelector('h1');
+          if (firstH1) {
+            firstH1.remove();
+          }
+        }
+      });
+    </script>
+  </Fragment>
+</BaseLayout>

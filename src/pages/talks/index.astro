@@ -1,0 +1,106 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import { siteConfig } from '@/config';
+import { generatePostsListSEO } from '@/utils/seo';
+import { shouldShowContent, isValidDate } from '@/utils/markdown';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import TalkCard from '@/components/TalkCard.astro';
+import Icon from '@/components/Icon.astro';
+
+// Check if talks are enabled and handle fallback
+let fallbackPage = null;
+
+if (!siteConfig.optionalContentTypes.talks) {
+  // Check for fallback page in pages collection
+  try {
+    fallbackPage = await getEntry('pages', 'talks');
+    if (fallbackPage) {
+      // PageLayout will handle the rendering
+    } else {
+      return Astro.redirect('/404');
+    }
+  } catch (error) {
+    // No fallback page found, redirect to 404
+    return Astro.redirect('/404');
+  }
+}
+
+// Get all talks
+const allTalks = await getCollection('talks');
+const isDev = import.meta.env.DEV;
+
+// Filter and sort talks (newest first)
+const visibleTalks = allTalks
+  .filter(talk => shouldShowContent(talk, isDev))
+  .sort((a, b) => {
+    const dateA = isValidDate(a.data.date) ? a.data.date : new Date(0);
+    const dateB = isValidDate(b.data.date) ? b.data.date : new Date(0);
+    return dateB.getTime() - dateA.getTime();
+  });
+
+// Get talks page content from special collection (optional)
+let talksPageContent = null;
+let TalksPageContent = null;
+
+try {
+  talksPageContent = await getEntry('special', 'talks');
+  if (talksPageContent) {
+    const { Content } = await render(talksPageContent);
+    TalksPageContent = Content;
+  }
+} catch (error) {
+  // Fallback to default if talks.md doesn't exist
+}
+
+// Generate SEO data
+const seoData = generatePostsListSEO(import.meta.env.SITE || '', undefined);
+seoData.title = talksPageContent?.data.title ? `${talksPageContent.data.title} | ${siteConfig.title}` : `Talks | ${siteConfig.title}`;
+seoData.description = talksPageContent?.data.description || `Conference and meetup talks by ${siteConfig.author}`;
+seoData.noIndex = (talksPageContent?.data as any)?.noIndex || false;
+---
+
+{fallbackPage ? (
+  <PageLayout page={fallbackPage as any} />
+) : (
+<BaseLayout seoData={seoData}>
+  <div class="pt-4 pb-8 md:py-8 relative">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8" style={`max-width: ${siteConfig.layout.contentWidth}`}>
+      <!-- Page header -->
+      <header class="mb-6 md:mb-8">
+        <h1 class="text-lg font-bold text-primary-900 dark:text-primary-50 mb-3">
+          {talksPageContent?.data.title || 'Talks'}
+        </h1>
+        {TalksPageContent ? (
+          <div class="prose prose-sm dark:prose-dark max-w-none">
+            <TalksPageContent />
+          </div>
+        ) : (
+          <p class="text-primary-600 dark:text-primary-300">
+            Talks I've given at conferences and meetups
+          </p>
+        )}
+      </header>
+
+      <!-- Talks list -->
+      {visibleTalks.length > 0 ? (
+        <div class="space-y-6">
+          {visibleTalks.map(talk => (
+            <TalkCard talk={talk} context="talks" />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-12">
+          <Icon name="mic" class="w-12 h-12 text-primary-300 dark:text-primary-600 mx-auto mb-4" />
+          <h3 class="text-lg font-medium text-primary-900 dark:text-primary-50 mb-2">
+            No talks yet
+          </h3>
+          <p class="text-primary-600 dark:text-primary-300">
+            Check back soon for upcoming talks!
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>
+)}
