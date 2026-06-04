@@ -36,8 +36,12 @@ const { title, description, event, date, recordingUrl, slidesUrl, tags } = talk.
     </div>
 
     <!-- Title -->
-    <h3 id={`talk-title-${talk.id}`} class="font-medium text-base text-primary-900 dark:text-primary-100 leading-relaxed group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors">
-      <a href={`/talks/${talk.id}`} aria-label={`View talk: ${title}`}>
+    <h3 id={`talk-title-${talk.id}`} class="font-medium text-base leading-relaxed">
+      <a
+        href={`/talks/${talk.id}`}
+        class="text-primary-900 dark:text-primary-100 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors"
+        aria-label={`View talk: ${title}`}
+      >
         {title}
       </a>
     </h3>
