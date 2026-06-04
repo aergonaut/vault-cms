@@ -8,7 +8,7 @@ tags:
   - ruby
   - sorbet
   - types
-draft: false
+draft: true
 ---
 A meetup talk walking through how to introduce Sorbet and Tapioca into a
 real-world Rails application without grinding development to a halt.

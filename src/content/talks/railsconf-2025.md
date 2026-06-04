@@ -9,7 +9,7 @@ tags:
   - railsconf
   - code-review
   - culture
-draft: false
+draft: true
 ---
 At the final RailsConf in Philadelphia, I gave my first major conference talk on
 building a strong code review culture within engineering teams.
