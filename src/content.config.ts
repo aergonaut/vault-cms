@@ -123,6 +123,42 @@ const docsCollection = defineCollection({
   }),
 });
 
+// Define schema for conference/meetup talks
+const talksCollection = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/talks' }),
+  schema: z.object({
+    title: z.string().default('Untitled Talk'),
+    description: z.string().nullable().optional().default('No description provided'),
+    // Name of the conference or meetup where the talk was given
+    event: z.string().nullable().optional(),
+    // Date the talk was given
+    date: z.coerce.date().default(() => new Date()),
+    // Link to the recording (video) of the talk
+    recordingUrl: z.string().url().nullable().optional(),
+    // Link to the slides of the talk
+    slidesUrl: z.string().url().nullable().optional(),
+    tags: z.array(z.string()).nullable().optional(),
+    image: z.any().nullable().optional().transform((val) => {
+      // Handle various Obsidian syntax formats
+      if (Array.isArray(val)) {
+        // Handle array format from [[...]] syntax - take first element
+        return val[0] || null;
+      }
+      if (typeof val === 'string') {
+        // Handle string format - return as-is
+        return val;
+      }
+      return null;
+    }),
+    imageAlt: z.string().nullable().optional(),
+    hideCoverImage: z.boolean().optional(),
+    hideTOC: z.boolean().optional(),
+    draft: z.boolean().optional(),
+    noIndex: z.boolean().optional(),
+    featured: z.boolean().optional(),
+  }),
+});
+
 // Define schema for special home pages (homepage blurb, 404, projects index, docs index)
 const specialCollection = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/special' }),
@@ -141,6 +177,7 @@ export const collections = {
   pages: pagesCollection,
   projects: projectsCollection,
   docs: docsCollection,
+  talks: talksCollection,
   special: specialCollection,
 };
 

@@ -3,6 +3,7 @@ import type {
   Page,
   Project,
   Docs,
+  Talk,
   SEOData,
   OpenGraphImage,
 } from "@/types";
@@ -194,6 +195,63 @@ export function generateProjectSEO(project: Project, url: string): SEOData {
     modifiedTime: date.toISOString(),
     tags: project.data.categories?.filter((cat) => cat !== null) || undefined,
     noIndex: project.data.noIndex || false,
+  };
+}
+
+// Generate SEO data for talks
+export function generateTalkSEO(talk: Talk, url: string): SEOData {
+  const { title, description, image, event, date } = talk.data;
+
+  let ogImage: OpenGraphImage | undefined;
+
+  if (image) {
+    // Extract image path from Obsidian bracket syntax if needed
+    const imagePath = extractImagePath(image);
+
+    // Handle both local and external image paths
+    let imageUrl: string;
+    if (imagePath.startsWith("http")) {
+      // External URL
+      imageUrl = imagePath;
+    } else {
+      // Use optimizeImagePath for proper path resolution
+      const optimizedPath = optimizeContentImagePath(
+        imagePath,
+        "talks",
+        talk.id,
+        talk.id
+      );
+      imageUrl = `${siteConfig.site}${optimizedPath}`;
+    }
+    ogImage = {
+      url: imageUrl,
+      alt: talk.data.imageAlt || `Title slide for talk: ${title}`,
+      width: 1200,
+      height: 630,
+    };
+  } else {
+    // Use default OG image
+    ogImage = getDefaultOGImage();
+    ogImage = {
+      ...ogImage,
+      url: `${siteConfig.site}${ogImage.url}`,
+    };
+  }
+
+  const description_ =
+    description || (event ? `Talk at ${event}: ${title}` : `Talk: ${title}`);
+
+  return {
+    title: `${title} | ${siteConfig.title}`,
+    description: description_,
+    canonical: url,
+    ogImage,
+    ogType: "article",
+    publishedTime: date.toISOString(),
+    modifiedTime: date.toISOString(),
+    articleSection: event || undefined,
+    tags: talk.data.tags?.filter((tag) => tag !== null) || undefined,
+    noIndex: talk.data.noIndex || false,
   };
 }
 

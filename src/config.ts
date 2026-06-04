@@ -163,6 +163,7 @@ export interface SiteConfig {
   optionalContentTypes: {
     projects: boolean;
     docs: boolean;
+    talks: boolean;
   };
 }
 
@@ -312,6 +313,7 @@ export const siteConfig: SiteConfig = {
     pages: [
       { title: "Posts", url: "/posts/" },
       { title: "Docs", url: "/docs/" },
+      { title: "Talks", url: "/talks/" },
       { title: "About", url: "/about/" },
       { title: "GitHub", url: "https://github.com/aergonaut/vault-cms" }
     ],
@@ -346,6 +348,8 @@ export const siteConfig: SiteConfig = {
     projects: false, // Enable projects section
     // [CONFIG:OPTIONAL_CONTENT_TYPES_DOCS]
     docs: true, // Enable documentation section
+    // [CONFIG:OPTIONAL_CONTENT_TYPES_TALKS]
+    talks: true, // Enable conference/meetup talks section
   },
 
   // Home Options

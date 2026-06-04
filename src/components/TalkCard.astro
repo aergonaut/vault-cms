@@ -1,0 +1,105 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, formatDateMobile, isValidDate } from '../utils/markdown';
+import { siteConfig } from '../config';
+import Icon from './Icon.astro';
+
+interface Props {
+  talk: CollectionEntry<'talks'>;
+  context?: 'talks' | 'home';
+}
+
+const { talk } = Astro.props;
+
+const { title, description, event, date, recordingUrl, slidesUrl, tags } = talk.data;
+---
+
+<article class="group post-card" role="article" aria-labelledby={`talk-title-${talk.id}`}>
+  <div class="p-4 rounded-lg">
+    <!-- Meta: date + event -->
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-primary-500 dark:text-primary-400 mb-1">
+      {isValidDate(date) && (
+        <time datetime={date.toISOString()}>
+          <span class="hidden sm:inline">{formatDate(date)}</span>
+          <span class="sm:hidden">{formatDateMobile(date)}</span>
+        </time>
+      )}
+
+      {isValidDate(date) && event && (
+        <>
+          <span class="text-primary-300 dark:text-primary-600 hidden sm:inline">•</span>
+          <span class="text-primary-300 dark:text-primary-600 sm:hidden">•</span>
+        </>
+      )}
+
+      {event && <span>{event}</span>}
+    </div>
+
+    <!-- Title -->
+    <h3 id={`talk-title-${talk.id}`} class="font-medium text-base leading-relaxed">
+      <a
+        href={`/talks/${talk.id}`}
+        class="text-primary-900 dark:text-primary-100 group-hover:text-highlight-600 dark:group-hover:text-highlight-400 transition-colors"
+        aria-label={`View talk: ${title}`}
+      >
+        {title}
+      </a>
+    </h3>
+
+    <!-- Description -->
+    {description && (
+      <p class="text-primary-600 dark:text-primary-300 line-clamp-2 text-sm leading-relaxed mt-1">
+        {description}
+      </p>
+    )}
+
+    <!-- Recording / slides links -->
+    {(recordingUrl || slidesUrl) && (
+      <div class="mt-3 flex flex-wrap gap-2">
+        {recordingUrl && (
+          <a
+            href={recordingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center text-xs font-medium text-highlight-600 dark:text-highlight-400 bg-highlight-50 dark:bg-highlight-900/20 px-2.5 py-1 rounded-full border border-highlight-200 dark:border-highlight-700 hover:bg-highlight-100 dark:hover:bg-highlight-900/40 hover:text-highlight-700 dark:hover:text-highlight-300 transition-all duration-200"
+          >
+            <Icon name="play" class="w-3.5 h-3.5 mr-1.5" />
+            Recording
+          </a>
+        )}
+        {slidesUrl && (
+          <a
+            href={slidesUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center text-xs font-medium text-highlight-600 dark:text-highlight-400 bg-highlight-50 dark:bg-highlight-900/20 px-2.5 py-1 rounded-full border border-highlight-200 dark:border-highlight-700 hover:bg-highlight-100 dark:hover:bg-highlight-900/40 hover:text-highlight-700 dark:hover:text-highlight-300 transition-all duration-200"
+          >
+            <Icon name="presentation" class="w-3.5 h-3.5 mr-1.5" />
+            Slides
+          </a>
+        )}
+      </div>
+    )}
+
+    <!-- Tags -->
+    {tags && tags.length > 0 && siteConfig.postOptions.tags && (
+      <div class="mt-3">
+        {tags.slice(0, 3).map((tag: string) => (
+          <span
+            class="inline-block text-xs text-primary-600 dark:text-primary-300 bg-primary-100 dark:bg-primary-800 px-2.5 py-1 rounded-full border border-primary-200 dark:border-primary-700 mr-2 mb-1"
+          >
+            {tag}
+          </span>
+        ))}
+        {tags.length > 3 && (
+          <span
+            class="inline-block text-xs text-primary-500 dark:text-primary-400 bg-primary-50 dark:bg-primary-800 px-2.5 py-1 rounded-full border border-primary-200 dark:border-primary-700 mr-2 mb-1"
+            aria-label={`${tags.length - 3} more tags available`}
+          >
+            + {tags.length - 3} more
+          </span>
+        )}
+      </div>
+    )}
+  </div>
+</article>
